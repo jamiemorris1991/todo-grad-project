@@ -58,20 +58,31 @@ function getTodoList(callback) {
     createRequest.send();
 }
 
-function deleteTodo(event) {
+function deleteTodoEvent(event) {
     if (event && event.target) {
         var id = event.target.getAttribute("data-id");
-        var deleteRequest = new XMLHttpRequest();
-        deleteRequest.open("DELETE", "/api/todo/" + id);
-        deleteRequest.onload = function() {
-            if (this.status !== 200) {
-                error.textContent = "Failed to Delete. Server returned " + this.status + " - " + this.responseText;
-            }
-        };
-        deleteRequest.send();
-        reloadTodoList();
+        if (id){
+            deleteTodo(id), reloadTodoList();
+        }
     }
 }
+
+function deleteTodo(id, callback) {
+    var deleteRequest = new XMLHttpRequest();
+    deleteRequest.open("DELETE", "/api/todo/" + id);
+    deleteRequest.onload = function() {
+        if (this.status !== 200) {
+            error.textContent = "Failed to Delete. Server returned " + this.status + " - " + this.responseText;
+        }else {
+            if(callback){
+                callback();
+            }
+        }
+    };
+    deleteRequest.send();
+}
+
+
 
 function markDone(event) {
     if (event && event.target) {
@@ -92,6 +103,17 @@ function markDone(event) {
     }
 }
 
+function clearAll(todos) {
+    return function() {
+        todos.forEach(function (todo) {
+            if (todo.isComplete) {
+                deleteTodo(todo.id);
+            }
+        });
+        reloadTodoList();
+    }
+}
+
 function reloadTodoList() {
     while (todoList.firstChild) {
         todoList.removeChild(todoList.firstChild);
@@ -100,6 +122,7 @@ function reloadTodoList() {
     getTodoList(function(todos) {
         todoListPlaceholder.style.display = "none";
         var itemsNotDone = 0;
+        var completedItems = 0;
         todos.forEach(function(todo) {
             var listItem = document.createElement("li");
             listItem.textContent = todo.title;
@@ -107,9 +130,10 @@ function reloadTodoList() {
             deleteButton.textContent = ("Delete");
             deleteButton.className = "delete";
             deleteButton.setAttribute("data-id", todo.id);
-            deleteButton.onclick = deleteTodo;
+            deleteButton.onclick = deleteTodoEvent;
             if (todo.isComplete) {
                 listItem.className = "isDone";
+                completedItems++;
             }
             else {
                 itemsNotDone++;
@@ -120,14 +144,19 @@ function reloadTodoList() {
                 doneButton.onclick = markDone;
                 listItem.appendChild(doneButton);
             }
-            if (itemsNotDone === 1) {
-                counter.textContent = "There is " + itemsNotDone + "task remaining";
-            }else {
-                counter.textContent = "There are " + itemsNotDone + " tasks remaining";
+            counter.textContent = (itemsNotDone === 1 ? "There is " +
+                itemsNotDone + " task remaining" : "There are " +
+                itemsNotDone + " tasks remaining");
+            if (completedItems > 0) {
+                var deleteDone = document.createElement("button");
+                deleteDone.textContent = "Delete All Completed";
+                deleteDone.onclick = clearAll(todos);
+                counter.appendChild(deleteDone);
             }
             listItem.appendChild(deleteButton);
             todoList.appendChild(listItem);
         });
+
     });
 }
 
