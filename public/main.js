@@ -127,7 +127,7 @@ function reloadTodoList() {
             listItem.textContent = todo.title;
             var deleteButton = document.createElement("button");
             deleteButton.textContent = ("Delete");
-            deleteButton.className = "delete";
+            deleteButton.className = "delete button";
             deleteButton.setAttribute("data-id", todo.id);
             deleteButton.onclick = deleteTodoEvent;
             if (todo.isComplete) {
@@ -138,7 +138,7 @@ function reloadTodoList() {
                 itemsNotDone++;
                 var doneButton = document.createElement("button");
                 doneButton.textContent = ("Mark as Done");
-                doneButton.className = "markDone";
+                doneButton.className = "markDone button";
                 doneButton.setAttribute("data-id", todo.id);
                 doneButton.onclick = markDone;
                 listItem.appendChild(doneButton);
@@ -149,6 +149,7 @@ function reloadTodoList() {
             if (completedItems > 0) {
                 var deleteDone = document.createElement("button");
                 deleteDone.textContent = "Delete All Completed";
+                deleteDone.className = "button";
                 deleteDone.onclick = clearAll(todos);
                 counter.appendChild(deleteDone);
             }
