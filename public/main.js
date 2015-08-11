@@ -3,6 +3,7 @@ var todoListPlaceholder = document.getElementById("todo-list-placeholder");
 var form = document.getElementById("todo-form");
 var todoTitle = document.getElementById("new-todo");
 var error = document.getElementById("error");
+var counter = document.getElementById("count-label");
 
 form.onsubmit = function(event) {
     var title = todoTitle.value;
@@ -91,25 +92,6 @@ function markDone(event) {
     }
 }
 
-function markNotDone(event) {
-    if (event && event.target) {
-        var id = event.target.getAttribute("data-id");
-        var updateRequest = new XMLHttpRequest();
-        updateRequest.open("PUT", "/api/todo/" + id);
-        updateRequest.setRequestHeader("Content-type", "application/json");
-        updateRequest.send(JSON.stringify({
-            isComplete: false
-        }));
-        updateRequest.onload = function() {
-            if (this.status === 200) {
-                reloadTodoList();
-            } else {
-                error.textContent = "Failed to update item. Server returned " + this.status + " - " + this.responseText;
-            }
-        };
-    }
-}
-
 function reloadTodoList() {
     while (todoList.firstChild) {
         todoList.removeChild(todoList.firstChild);
@@ -117,10 +99,10 @@ function reloadTodoList() {
     todoListPlaceholder.style.display = "block";
     getTodoList(function(todos) {
         todoListPlaceholder.style.display = "none";
+        var itemsNotDone = 0;
         todos.forEach(function(todo) {
             var listItem = document.createElement("li");
             listItem.textContent = todo.title;
-
             var deleteButton = document.createElement("button");
             deleteButton.textContent = ("Delete");
             deleteButton.className = "delete";
@@ -130,12 +112,18 @@ function reloadTodoList() {
                 listItem.className = "isDone";
             }
             else {
+                itemsNotDone++;
                 var doneButton = document.createElement("button");
                 doneButton.textContent = ("Mark as Done");
                 doneButton.className = "markDone";
                 doneButton.setAttribute("data-id", todo.id);
                 doneButton.onclick = markDone;
                 listItem.appendChild(doneButton);
+            }
+            if (itemsNotDone === 1) {
+                counter.textContent = "There is " + itemsNotDone + "task remaining";
+            }else {
+                counter.textContent = "There are " + itemsNotDone + " tasks remaining";
             }
             listItem.appendChild(deleteButton);
             todoList.appendChild(listItem);
