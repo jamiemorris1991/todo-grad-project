@@ -112,14 +112,14 @@ describe("server", function() {
         });
     });
     describe("update a todo", function() {
-        beforeEach(function() {
+        beforeEach(function(done) {
             request.post({
                 url: todoListUrl,
                 json: {
                     title: "This is a TODO item"
                 }
-            }, function(error, response) {
-                assert.equal(response.statusCode, 201);
+            }, function() {
+                done();
             });
         });
         it("responds with status code 404 if there is no such item", function(done) {
@@ -133,15 +133,39 @@ describe("server", function() {
                 done();
             });
         });
-        it("responds with status code 200", function(done) {
+        it("changes the title and completed status of the item", function(done) {
             request.put({
                 url: todoListUrl + "/0",
                 json: {
-                    title: "This is an updated TODO item"
+                    id: "0",
+                    title: "This is an updated TODO item",
+                    isComplete : true
                 }
             }, function() {
-                request.del(todoListUrl + "/0", function(error, response) {
-                    assert.equal(response.statusCode, 200);
+                request.get(todoListUrl, function(error, response, body) {
+                    assert.deepEqual(JSON.parse(body)[0], {
+                        id: "0",
+                        title: "This is an updated TODO item",
+                        isComplete : true
+                    });
+                    done();
+                });
+            });
+        });
+        it("changes just the completed status of the item", function(done) {
+            request.put({
+                url: todoListUrl + "/0",
+                json: {
+                    id: "0",
+                    isComplete : true
+                }
+            }, function() {
+                request.get(todoListUrl, function(error, response, body) {
+                    assert.deepEqual(JSON.parse(body)[0], {
+                        id: "0",
+                        title: "This is a TODO item",
+                        isComplete : true
+                    });
                     done();
                 });
             });
