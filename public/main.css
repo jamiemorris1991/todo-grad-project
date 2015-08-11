@@ -28,3 +28,31 @@ h1 {
     text-decoration:line-through;
     color:silver;
 }
+
+.button {
+    color: white;
+    font-family: Helvetica, Arial, Sans-Serif;
+    border:none;
+    background: #666;
+    font-size: 20px;
+    text-decoration: none;
+    text-shadow: -1px -1px 1px #616161;
+    position: relative;
+    padding: 5px 10px;
+    margin:10px 5px;
+    -webkit-box-shadow: 2px 2px 0 #444;
+    -moz-box-shadow: 2px 2px 0 #444;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 4px;
+}
+.button:hover {
+    -webkit-box-shadow: 0px 0px 0 #666;
+    -moz-box-shadow: 0px 0px 0 #666;
+    background: #888;
+    text-shadow:none;
+    top: 2px;
+    left: 2px;
+}
