@@ -10,6 +10,7 @@ module.exports = function(port, middleware, callback) {
     }
     app.use(express.static("public"));
     app.use(bodyParser.json());
+    app.use("/fetch/", express.static("node_modules/whatwg-fetch"));
 
     var latestId = 0;
     var todos = [];
@@ -44,7 +45,6 @@ module.exports = function(port, middleware, callback) {
             res.sendStatus(404);
         }
     });
-
     // Delete
     app.delete("/api/todo/:id", function(req, res) {
         var id = req.params.id;

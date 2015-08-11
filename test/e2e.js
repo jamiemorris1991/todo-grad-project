@@ -85,15 +85,6 @@ testing.describe("end to end", function() {
                 assert.equal(elements.length, 0);
             });
         });
-        /*testing.it("displays an error if the request fails", function () {
-            helpers.setupErrorRoute("delete", "/api/todo/0");
-            helpers.navigateToSite();
-            helpers.addTodo("New todo item");
-            helpers.deleteTodo(0);
-            helpers.getErrorText().then(function (text) {
-                assert.equal(text, "Failed to Delete. Server returned 500 - Internal Server Error");
-            });
-        });*/
     });
 });
 
