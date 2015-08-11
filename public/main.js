@@ -61,8 +61,9 @@ function getTodoList(callback) {
 function deleteTodoEvent(event) {
     if (event && event.target) {
         var id = event.target.getAttribute("data-id");
-        if (id){
-            deleteTodo(id), reloadTodoList();
+        if (id) {
+            deleteTodo(id);
+            reloadTodoList();
         }
     }
 }
@@ -74,15 +75,13 @@ function deleteTodo(id, callback) {
         if (this.status !== 200) {
             error.textContent = "Failed to Delete. Server returned " + this.status + " - " + this.responseText;
         }else {
-            if(callback){
+            if (callback) {
                 callback();
             }
         }
     };
     deleteRequest.send();
 }
-
-
 
 function markDone(event) {
     if (event && event.target) {
@@ -111,7 +110,7 @@ function clearAll(todos) {
             }
         });
         reloadTodoList();
-    }
+    };
 }
 
 function reloadTodoList() {
