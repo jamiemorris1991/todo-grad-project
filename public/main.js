@@ -28,6 +28,21 @@ function createTodo(title, callback) {
         }
     };
 }
+function updateTodo(id, title, callback) {
+    var updateRequest = new XMLHttpRequest();
+    updateRequest.open("PUT", "/api/todo" + id);
+    updateRequest.setRequestHeader("Content-type", "application/json");
+    updateRequest.send(JSON.stringify({
+        title: title
+    }));
+    updateRequest.onload = function() {
+        if (this.status === 200) {
+            callback();
+        } else {
+            error.textContent = "Failed to update item. Server returned " + this.status + " - " + this.responseText;
+        }
+    };
+}
 
 function getTodoList(callback) {
     var createRequest = new XMLHttpRequest();
@@ -57,6 +72,44 @@ function deleteTodo(event) {
     }
 }
 
+function markDone(event) {
+    if (event && event.target) {
+        var id = event.target.getAttribute("data-id");
+        var updateRequest = new XMLHttpRequest();
+        updateRequest.open("PUT", "/api/todo/" + id);
+        updateRequest.setRequestHeader("Content-type", "application/json");
+        updateRequest.send(JSON.stringify({
+            isComplete: true
+        }));
+        updateRequest.onload = function() {
+            if (this.status === 200) {
+                reloadTodoList();
+            } else {
+                error.textContent = "Failed to update item. Server returned " + this.status + " - " + this.responseText;
+            }
+        };
+    }
+}
+
+function markNotDone(event) {
+    if (event && event.target) {
+        var id = event.target.getAttribute("data-id");
+        var updateRequest = new XMLHttpRequest();
+        updateRequest.open("PUT", "/api/todo/" + id);
+        updateRequest.setRequestHeader("Content-type", "application/json");
+        updateRequest.send(JSON.stringify({
+            isComplete: false
+        }));
+        updateRequest.onload = function() {
+            if (this.status === 200) {
+                reloadTodoList();
+            } else {
+                error.textContent = "Failed to update item. Server returned " + this.status + " - " + this.responseText;
+            }
+        };
+    }
+}
+
 function reloadTodoList() {
     while (todoList.firstChild) {
         todoList.removeChild(todoList.firstChild);
@@ -67,12 +120,25 @@ function reloadTodoList() {
         todos.forEach(function(todo) {
             var listItem = document.createElement("li");
             listItem.textContent = todo.title;
+
             var deleteButton = document.createElement("button");
             deleteButton.textContent = ("Delete");
+            deleteButton.className = "delete";
             deleteButton.setAttribute("data-id", todo.id);
             deleteButton.onclick = deleteTodo;
-            todoList.appendChild(listItem);
+            if (todo.isComplete) {
+                listItem.className = "isDone";
+            }
+            else {
+                var doneButton = document.createElement("button");
+                doneButton.textContent = ("Mark as Done");
+                doneButton.className = "markDone";
+                doneButton.setAttribute("data-id", todo.id);
+                doneButton.onclick = markDone;
+                listItem.appendChild(doneButton);
+            }
             listItem.appendChild(deleteButton);
+            todoList.appendChild(listItem);
         });
     });
 }
