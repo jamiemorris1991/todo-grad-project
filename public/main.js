@@ -4,6 +4,14 @@ var form = document.getElementById("todo-form");
 var todoTitle = document.getElementById("new-todo");
 var error = document.getElementById("error");
 var counter = document.getElementById("count-label");
+var filterAll = document.getElementById("filterAll");
+var filterActive =  document.getElementById("filterActive");
+var filterCompleted = document.getElementById("filterCompleted");
+
+var filter = "";
+filterAll.onclick = setFilter();
+filterActive.onclick = setFilter("active");
+filterCompleted.onclick = setFilter("completed");
 
 form.onsubmit = function(event) {
     var title = todoTitle.value;
@@ -113,7 +121,22 @@ function clearAll(todos) {
     };
 }
 
-function reloadTodoList() {
+function setFilter(filter) {
+    return function() {
+        switch (filter) {
+            case "active":
+                reloadTodoList("active");
+                break;
+            case "completed":
+                reloadTodoList("completed");
+                break;
+            default :
+                reloadTodoList();
+        }
+    };
+}
+
+function reloadTodoList(filter) {
     while (todoList.firstChild) {
         todoList.removeChild(todoList.firstChild);
     }
@@ -133,9 +156,15 @@ function reloadTodoList() {
             if (todo.isComplete) {
                 listItem.className = "isDone";
                 completedItems++;
+                if (filter === "active") {
+                    listItem.style.display = "none";
+                }
             }
             else {
                 itemsNotDone++;
+                if (filter === "completed") {
+                    listItem.style.display = "none";
+                }
                 var doneButton = document.createElement("button");
                 doneButton.textContent = ("Mark as Done");
                 doneButton.className = "markDone button";
@@ -156,7 +185,6 @@ function reloadTodoList() {
             listItem.appendChild(deleteButton);
             todoList.appendChild(listItem);
         });
-
     });
 }
 
