@@ -79,6 +79,8 @@ module.exports.addTodo = function(text) {
     driver.findElement(webdriver.By.id("submit-todo")).click();
 };
 module.exports.deleteTodo = function(id) {
+    var todoListPlaceholder = driver.findElement(webdriver.By.id("todo-list-placeholder"));
+    driver.wait(webdriver.until.elementIsNotVisible(todoListPlaceholder), 5000);
     driver.findElement((webdriver.By.css(".delete[data-id='" + id + "']"))).click();
 };
 
