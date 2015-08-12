@@ -191,3 +191,4 @@ function reloadTodoList(filter) {
 }
 
 reloadTodoList();
+setInterval (reloadTodoList(), 10000);

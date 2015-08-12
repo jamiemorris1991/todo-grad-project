@@ -3,6 +3,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-jscs");
     grunt.loadNpmTasks("grunt-mocha-test");
     grunt.loadNpmTasks("grunt-mocha-istanbul");
+    grunt.loadNpmTasks("grunt-serve");
+    grunt.loadNpmTasks("grunt-nodemon");
 
     var testOutputLocation = process.env.CIRCLE_TEST_REPORTS || "test_output";
     var artifactsLocation = "build_artifacts";
@@ -46,17 +48,13 @@ module.exports = function(grunt) {
             }
         },
         "istanbul_report": {
-            test: {
-
-            },
+            test: {},
             options: {
                 coverageFolder: artifactsLocation
             }
         },
         "istanbul_check_coverage": {
-            test: {
-
-            },
+            test: {},
             options: {
                 coverageFolder: artifactsLocation,
                 check: {
@@ -65,6 +63,17 @@ module.exports = function(grunt) {
                     branches: 100,
                     functions: 100
                 }
+            }
+        },
+        serve: {
+            options: {
+                port: 9000
+            }
+        },
+        nodemon: {
+            dev: {
+                script: "server.js",
+                watch: ["server"]
             }
         }
     });
@@ -79,7 +88,7 @@ module.exports = function(grunt) {
         grunt.util.spawn({
             cmd: cmd,
             args: [istanbulPath, "report", "--dir=" + options.coverageFolder]
-        }, function(err) {
+        }, function (err) {
             if (err) {
                 return done(err);
             }
@@ -93,4 +102,6 @@ module.exports = function(grunt) {
     grunt.registerTask("ci-test", ["check", "mochaTest:ci", "mocha_istanbul:ci", "istanbul_report",
         "istanbul_check_coverage"]);
     grunt.registerTask("default", "test");
+    grunt.registerTask("serve", "serve");
+    grunt.registerTask("watch", "nodemon");
 };
