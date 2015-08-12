@@ -1,49 +1,45 @@
 body {
-    background: #e6e6e6;
+    background: #ddd;
     color: rgba(0, 0, 0, 0.87);
     font-family: sans-serif;
     margin: 0;
 }
 
 header {
-    background-color: #2619B2;
+    background-image:  url("footer_lodyas.png");
+    font-family: 'Roboto Slab', serif;
     padding: 0.2em 1em;
-    -webkit-box-shadow: 2px 2px 0 #444;
-    -moz-box-shadow: 2px 2px 0 #444;
+    -webkit-box-shadow: 0px 2px 2px #444;
+    -moz-box-shadow: 0px 2px 2px #444;
 }
 
 section,
 h1 {
     max-width: 1170px;
-    margin-left: auto;
+    margin-left: 20px;
     margin-right: auto;
 }
-
 h1 {
     display: block;
     font-size: 34px;
     line-height: 34px;
-    color: rgba(255, 255, 255, 0.87);
+    color: #e6e6e6
 }
-
-.isDone {
-    text-decoration:line-through;
-    color:#888;
+h2{
+    display: inline-block;
 }
-
 .button {
     color: white;
     font-family: Helvetica, Arial, Sans-Serif;
     border:none;
+    outline: none;
     background: #666;
     font-size: 20px;
-    text-decoration: none;
-    text-shadow: -1px -1px 1px #616161;
     position: relative;
-    padding: 5px 10px;
+    padding: 4px 8px;
     margin:10px 5px;
-    -webkit-box-shadow: 2px 2px 0 #444;
-    -moz-box-shadow: 2px 2px 0 #444;
+    -webkit-box-shadow: 0px 2px 1px #444;
+    -moz-box-shadow: 0px 2px 1px #444;
     -webkit-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
     -webkit-border-radius: 3px;
@@ -53,8 +49,115 @@ h1 {
 .button:hover {
     -webkit-box-shadow: 0px 0px 0 #666;
     -moz-box-shadow: 0px 0px 0 #666;
-    background: #888;
+    opacity: 0.6;
     text-shadow:none;
-    top: 2px;
-    left: 2px;
+    top: 1px;
+}
+
+.todo-section{
+    padding:0 2px;
+    border-left:1px solid #c80000;
+}
+
+ul{
+    margin-top:0;
+    padding: 0;
+}
+
+li, #formDiv {;
+    background-color: #f0f0f0;
+    list-style: none;
+    font-size: 20px;
+    font-weight:bold;
+    font-family: 'Roboto Slab', serif;
+    margin: 0px;
+    border-bottom: 1px dotted #444;
+    border-left:1px solid #C80000;
+    max-width: 75%;
+}
+li:hover {
+    background:#fff;
+    -webkit-transition: all 0.2s;
+    -moz-transition:    all 0.2s;
+    -ms-transition:     all 0.2s;
+    -o-transition:      all 0.2s;
+}
+
+
+.isDone {
+    background-color: #ddd;
+    text-decoration:line-through;
+    font-weight: normal;
+    color:#888;
+}
+
+.undo {
+    background: #666;
+}
+.done {
+    background: green;
+}
+.edit {
+    float:right;
+}
+.delete {
+    background: #C80000;
+    float:right;
+}
+.star{
+    background: #C87F28;
+    float: right;
+}
+
+
+.delete-all{
+    background: steelblue;
+    font-size: 12px;
+    position: relative;
+    padding: 0px 8px;
+    margin:0 5px;
+}
+
+#formDiv{
+    display:inline-block;
+    margin:0;
+    width:75%;
+}
+#todo-form {
+    display: inline-block;
+}
+#new-todo, #edit-todo {
+    font-family: 'Roboto Slab', serif;
+    padding:2px;
+    font-size: 18px;
+    height:20px;
+    border:none;
+    background: none;
+    margin:12px 10px;
+    outline:none;
+}#new-todo:focus, #edit-todo:focus{
+    border-bottom:1px solid #444;
+     font-weight:bold;
+}
+#edit-todo{
+    width:80%;
+}
+
+#count-active, #count-all, #count-complete {
+    display: block;
+    float:left;
+    margin: 5px 0px 0px 40px;
+    font-size: 20px;
+    color:#888;
+    font-size:18px;
+    font-weight:normal;
+}
+
+.filter {
+
+
+}
+
+.fa {
+    color:#ddd;
 }

@@ -3,7 +3,9 @@ var todoListPlaceholder = document.getElementById("todo-list-placeholder");
 var form = document.getElementById("todo-form");
 var todoTitle = document.getElementById("new-todo");
 var error = document.getElementById("error");
-var counter = document.getElementById("count-label");
+var countActive = document.getElementById("count-active");
+var countAll = document.getElementById("count-all");
+var countCompleted = document.getElementById("count-completed");
 var filterAll = document.getElementById("filterAll");
 var filterActive =  document.getElementById("filterActive");
 var filterCompleted = document.getElementById("filterCompleted");
@@ -20,6 +22,22 @@ form.onsubmit = function(event) {
     todoTitle.value = "";
     event.preventDefault();
 };
+
+function doEdit() {
+    var editForm = document.getElementById("edit-form");
+    var editTodo = document.getElementById("edit-todo");
+    var id = editForm.parentElement.getAttribute("data-id");
+    if (editForm) {
+        editForm.onsubmit = function(event) {
+            var title = editTodo.value;
+            updateTodo(title, id, function() {
+                reloadTodoList();
+            });
+            todoTitle.value = "";
+            event.preventDefault();
+        };
+    }
+}
 
 function getTodoList(callback) {
     fetch("/api/todo")
@@ -54,25 +72,26 @@ function createTodo(title, callback) {
     });
 }
 
-function updateTodo(id, title, callback) {
-    fetch("/api/todo" + id, {
+function updateTodo(title, id, callback) {
+    fetch("/api/todo/" + id, {
         method: "put",
         headers: {"Content-type": "application/json"},
-        body: JSON.stringify({title: title})
+        body: JSON.stringify({"title": title}),
     })
-    .then(function(response) {
+    .then(function (response) {
         if (response.status === 200) {
             callback();
         } else {
-            error.textContent = "Failed to update item. Server returned " + this.status +
-                " - " + this.responseText;
+            error.textContent = "Failed to create item. Server returned " + response.status +
+                " - " + response.statusText;
         }
     });
 }
 
 function markDone(event) {
     if (event && event.target) {
-        var id = event.target.getAttribute("data-id");
+        var id = event.target.getAttribute("data-id") ||
+            event.target.parentElement.getAttribute("data-id");
         fetch("/api/todo/" + id, {
             method: "put",
             headers: {"Content-type": "application/json"},
@@ -89,22 +108,45 @@ function markDone(event) {
     }
 }
 
+function markNotDone(event) {
+    if (event && event.target) {
+        var id = event.target.getAttribute("data-id") ||
+            event.target.parentElement.getAttribute("data-id");
+        fetch("/api/todo/" + id, {
+            method: "put",
+            headers: {"Content-type": "application/json"},
+            body: JSON.stringify({isComplete: false})
+        })
+            .then(function (response) {
+                if (response.status === 200) {
+                    reloadTodoList();
+                } else {
+                    error.textContent = "Failed to update item. Server returned " + this.status +
+                        " - " + this.responseText;
+                }
+            });
+    }
+}
+
 function deleteTodoEvent(event) {
     if (event && event.target) {
-        var id = event.target.getAttribute("data-id");
+        var id = event.target.getAttribute("data-id")  ||
+            event.target.parentElement.getAttribute("data-id");
         if (id) {
-            deleteTodo(id);
+            deleteTodo(id, reloadTodoList);
         }
     }
 }
 
-function deleteTodo(id) {
+function deleteTodo(id, callback) {
     fetch("/api/todo/" + id, {
         method: "delete"
     })
     .then(function (response) {
         if (response.status === 200) {
-            reloadTodoList();
+            if (callback) {
+                callback();
+            }
         } else {
             error.textContent = "Failed to Delete. Server returned " + response.status +
                 " - " + response.statusText;
@@ -151,16 +193,34 @@ function reloadTodoList(filter) {
             var listItem = document.createElement("li");
             listItem.textContent = todo.title;
             var deleteButton = document.createElement("button");
-            deleteButton.textContent = ("Delete");
+            deleteButton.innerHTML = "<i class=\"fa fa-trash-o\"></i>";
             deleteButton.className = "delete button";
             deleteButton.setAttribute("data-id", todo.id);
             deleteButton.onclick = deleteTodoEvent;
+            var editButton =  document.createElement("button");
+            editButton.innerHTML = "<i class=\"fa fa-pencil\"></i>";
+            editButton.className = "edit button";
+            editButton.setAttribute("data-id", todo.id);
+            editButton.onclick = function() {
+                listItem.innerHTML = "<form id=\"edit-form\">" +
+                    "<input id=\"edit-todo\" placeholder=\"" + todo.title + "\"></form>";
+                listItem.setAttribute("data-id", todo.id);
+                doEdit();
+            };
+            var deleteDone = document.getElementById("delete-done");
+            deleteDone.style.display = "none";
             if (todo.isComplete) {
                 listItem.className = "isDone";
                 completedItems++;
                 if (filter === "active") {
                     listItem.style.display = "none";
                 }
+                var undoButton = document.createElement("button");
+                undoButton.innerHTML = "<i class=\"fa fa-undo icon-spin\"></i>";
+                undoButton.className = "undo button";
+                undoButton.setAttribute("data-id", todo.id);
+                undoButton.onclick = markNotDone;
+                listItem.insertBefore (undoButton, listItem.childNodes[0]);
             }
             else {
                 itemsNotDone++;
@@ -168,27 +228,31 @@ function reloadTodoList(filter) {
                     listItem.style.display = "none";
                 }
                 var doneButton = document.createElement("button");
-                doneButton.textContent = ("Mark as Done");
-                doneButton.className = "markDone button";
+                doneButton.innerHTML = "<i class=\"fa fa- fa-check\"></i>";
+                doneButton.className = "done button";
                 doneButton.setAttribute("data-id", todo.id);
                 doneButton.onclick = markDone;
-                listItem.appendChild(doneButton);
+                listItem.insertBefore (doneButton, listItem.childNodes[0]);
             }
-            counter.textContent = (itemsNotDone === 1 ? "There is " +
-                itemsNotDone + " task remaining" : "There are " +
-                itemsNotDone + " tasks remaining");
+            var totalTasks = completedItems + itemsNotDone;
+            filterAll.textContent = (totalTasks === 1 ? totalTasks + " task" :
+            totalTasks + " total tasks");
+            filterCompleted.textContent = (completedItems === 1 ? completedItems + " Completed task" :
+            completedItems + " Completed tasks");
+            filterActive.textContent = (itemsNotDone === 1 ? itemsNotDone + " active task" :
+            itemsNotDone + " active tasks");
+            filterCompleted.textContent = (completedItems === 1 ? completedItems + " Completed task" :
+            completedItems + " Completed tasks");
             if (completedItems > 0) {
-                var deleteDone = document.createElement("button");
-                deleteDone.textContent = "Delete All Completed";
-                deleteDone.className = "button";
+                deleteDone.style.display = "block";
                 deleteDone.onclick = clearAll(todos);
-                counter.appendChild(deleteDone);
             }
             listItem.appendChild(deleteButton);
-            todoList.appendChild(listItem);
+            listItem.appendChild(editButton);
+            todoList.appendChild (listItem);
         });
     });
 }
 
 reloadTodoList();
-setInterval (reloadTodoList(), 10000);
+//setInterval (reloadTodoList(), 10000);
