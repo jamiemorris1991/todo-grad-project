@@ -26,7 +26,7 @@ form.onsubmit = function(event) {
 function doEdit() {
     var editForm = document.getElementById("edit-form");
     var editTodo = document.getElementById("edit-todo");
-    var id = editForm.parentElement.getAttribute("data-id");
+    var id = editForm.parentElement.parentElement.getAttribute("data-id");
     if (editForm) {
         editForm.onsubmit = function(event) {
             var title = editTodo.value;
@@ -199,12 +199,18 @@ function reloadTodoList(filter) {
             deleteButton.onclick = deleteTodoEvent;
             var editButton =  document.createElement("button");
             editButton.innerHTML = "<i class=\"fa fa-pencil\"></i>";
-            editButton.className = "edit button";
+            editButton.className = "edit";
             editButton.setAttribute("data-id", todo.id);
             editButton.onclick = function() {
-                listItem.innerHTML = "<form id=\"edit-form\">" +
-                    "<input id=\"edit-todo\" placeholder=\"" + todo.title + "\"></form>";
+                var cancelbutton = document.createElement("button");
+                cancelbutton.innerHTML = "<i class=\"fa fa-ban\"></i>";
+                cancelbutton.className = "cancel button";
+                cancelbutton.onclick = function(){reloadTodoList()};
+                listItem.innerHTML = "<div id=\"editFormDiv\"><form id=\"edit-form\">" +
+                    "<input id=\"edit-todo\" placeholder=\"" + todo.title + "\"></form></div>";
                 listItem.setAttribute("data-id", todo.id);
+                listItem.firstElementChild.firstElementChild.firstElementChild.focus();
+                document.getElementById("editFormDiv").appendChild(cancelbutton);
                 doEdit();
             };
             var deleteDone = document.getElementById("delete-done");

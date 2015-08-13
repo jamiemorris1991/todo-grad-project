@@ -6,27 +6,61 @@ body {
 }
 
 header {
-    background-image:  url("footer_lodyas.png");
+    background-image:  url("congruent_outline.png");
     font-family: 'Roboto Slab', serif;
     padding: 0.2em 1em;
     -webkit-box-shadow: 0px 2px 2px #444;
     -moz-box-shadow: 0px 2px 2px #444;
 }
 
-section,
-h1 {
+.fa {
+    color:#ddd;
+}
+
+section, h1 {
     max-width: 1170px;
     margin-left: 20px;
     margin-right: auto;
 }
-h1 {
-    display: block;
+h1{
     font-size: 34px;
     line-height: 34px;
-    color: #e6e6e6
+    color: #ddd;
 }
 h2{
     display: inline-block;
+}
+
+.todo-section{
+    padding:0 2px;
+    border-left:1px solid #c80000;
+}
+
+ul{
+    background-image:  url("double_lined.png");
+    margin-top:0;
+    padding: 0;
+    width: auto;
+    max-width: 75%;
+}
+
+li, #formDiv{;
+    /*background-color: #f0f0f0;*/
+    list-style: none;
+    font-size: 20px;
+    font-weight:bold;
+    font-family: 'Roboto Slab', serif;
+    margin: 0px;
+    border-bottom: 1px dotted #444;
+    border-left:1px solid #C80000;
+}
+li:hover {
+    background: rgba;
+    opacity: 0.2;
+    -webkit-transition: all 0.4s;
+    -moz-transition:    all 0.4s;
+    -ms-transition:     all 0.4s;
+    -o-transition:      all 0.4s;
 }
 .button {
     color: white;
@@ -50,45 +84,7 @@ h2{
     -webkit-box-shadow: 0px 0px 0 #666;
     -moz-box-shadow: 0px 0px 0 #666;
     opacity: 0.6;
-    text-shadow:none;
     top: 1px;
-}
-
-.todo-section{
-    padding:0 2px;
-    border-left:1px solid #c80000;
-}
-
-ul{
-    margin-top:0;
-    padding: 0;
-}
-
-li, #formDiv {;
-    background-color: #f0f0f0;
-    list-style: none;
-    font-size: 20px;
-    font-weight:bold;
-    font-family: 'Roboto Slab', serif;
-    margin: 0px;
-    border-bottom: 1px dotted #444;
-    border-left:1px solid #C80000;
-    max-width: 75%;
-}
-li:hover {
-    background:#fff;
-    -webkit-transition: all 0.2s;
-    -moz-transition:    all 0.2s;
-    -ms-transition:     all 0.2s;
-    -o-transition:      all 0.2s;
-}
-
-
-.isDone {
-    background-color: #ddd;
-    text-decoration:line-through;
-    font-weight: normal;
-    color:#888;
 }
 
 .undo {
@@ -97,25 +93,38 @@ li:hover {
 .done {
     background: green;
 }
-.edit {
-    float:right;
+.edit ,.edit i.fa{
+    color: #444;
+    border:none;
+    outline: none;
+    background:none;
+    font-size: 20px;
+    position: relative;
 }
-.delete {
+.edit i.fa:hover{
+    color:#888;
+}
+
+.isDone {
+    background-color:rgba(0, 0, 0, 0.1);
+    opacity: 1;
+    text-decoration:line-through;
+    font-weight: normal;
+    color:#888;
+}
+.delete, .cancel{
+    position: relative;
     background: #C80000;
     float:right;
 }
-.star{
-    background: #C87F28;
-    float: right;
-}
 
-
-.delete-all{
-    background: steelblue;
-    font-size: 12px;
+#delete-done{
+    font-size: 13px;
     position: relative;
-    padding: 0px 8px;
-    margin:0 5px;
+    max-width:84px;
+    word-wrap: break-word;
+    padding: 0px 5px;
+    float: right;
 }
 
 #formDiv{
@@ -133,16 +142,25 @@ li:hover {
     height:20px;
     border:none;
     background: none;
-    margin:12px 10px;
+    margin:12px 0px 12px 10px;
     outline:none;
-}#new-todo:focus, #edit-todo:focus{
-    border-bottom:1px solid #444;
+}
+#new-todo:focus, #edit-todo:focus{
+    border-bottom:1px solid #888;
      font-weight:bold;
 }
-#edit-todo{
-    width:80%;
+#editFormDiv {
+    display:inline-block;
+    margin:0;
+    width: 100%;
 }
-
+#edit-form {
+    display: inline-block;
+    width: 92%;
+}
+#edit-todo{
+    width: 100%;
+}
 #count-active, #count-all, #count-complete {
     display: block;
     float:left;
@@ -153,11 +171,3 @@ li:hover {
     font-weight:normal;
 }
 
-.filter {
-
-
-}
-
-.fa {
-    color:#ddd;
-}
